@@ -58,7 +58,7 @@ async function fetchleetcodecontest(res, username, rating, title, liverank) {
       console.log(si);
       console.log(ei);
       console.log(s);
-      res.status(200).json({ message: 'Success', data: s });
+      res.status(200).json({ message: 'Success', data: {temp:temp ,s:s} });
       // let data
       // try {
       //   data = JSON.parse(s);
