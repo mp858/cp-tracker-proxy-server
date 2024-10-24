@@ -31,18 +31,7 @@ async function fetchleetcodecontest(res, username, rating, title, liverank) {
   let pg = 1;
   for (pg = 1; pg <=1;pg++) {
     try {
-      const browser = await puppeteer.launch({  headless:true,
-        arg: [
-          "--disable--setuid-sandbox",
-          "--no-sandbox",
-          "--single-process",
-          "--no-zygote",
-        ], 
-        executablePath:
-          process.env.NODE_ENV === "production"
-            ? process.env.PUPPETEER_EXECUTABLE_PATH
-            : puppeteer.executablePath(),
-          });
+      const browser = await puppeteer.launch({  headless:true});
       const page = await browser.newPage();
       await page.goto(`https://leetcode.com/contest/api/ranking/weekly-contest-420/?pagination=${pg}&region=global`, { timeout: 0 }, { waitUntil: 'networkidle0' });
       const content = await page.content();
