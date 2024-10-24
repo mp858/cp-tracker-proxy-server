@@ -78,9 +78,9 @@ async function fetchleetcodecontest(res, username, rating, title, liverank) {
   //       }
   //     }
   //   }
-  //   catch (err) {
-  //     console.log(`error parsing contest data pg:${pg}`, err)
-  //   }
+    catch (err) {
+      console.log(`error parsing contest data pg:${pg}`, err)
+    }
   //   if (f) {
   //     break;
   //   }
