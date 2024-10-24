@@ -29,7 +29,7 @@ app.use(express.json());
 async function fetchleetcodecontest(res, username, rating, title, liverank) {
   let f = false;
   let pg = 1;
-  for (pg = 1; pg <= 60;) {
+  for (pg = 1; pg <= 1;pg++) {
     try {
       const browser = await puppeteer.launch({  headless:true,
         arg: [
@@ -48,46 +48,48 @@ async function fetchleetcodecontest(res, username, rating, title, liverank) {
       const content = await page.content();
       const temp = `${content}`;
       //   console.log(temp);
-      let si = temp.indexOf('"total_rank"');
+      res.status(200).json({ message: 'Success', data: temp });
+      // let si = temp.indexOf('"total_rank"');
 
-      // Find the ending index of 'user_num:29181'
-      let ei = temp.indexOf('"user_num":') + '"user_num":'.length + 6;
-      // Extract the substring from start to end
-      let s = "{" + temp.substring(si, ei);
+      // // Find the ending index of 'user_num:29181'
+      // let ei = temp.indexOf('"user_num":') + '"user_num":'.length + 6;
+      // // Extract the substring from start to end
+      // let s = "{" + temp.substring(si, ei);
       // console.log(s);
-      let data
-      try {
-        data = JSON.parse(s);
-        console.log("data");
-        pg++;
-      }
-      catch (err) {
-        console.error(err);
-      }
-      console.log("page no:", pg)
-      // // console.log(data);
-      await browser.close();
-      for (let i = 0; i < data.total_rank.length; i++) {
-        // console.log(`${data.total_rank[i].username}:${data.total_rank[i].rank}`);
-        if (data.total_rank[i].user_slug == username) {
-          liverank = data.total_rank[i].rank;
-          f = true;
-          break;
-        }
-      }
-    }
-    catch (err) {
-      console.log(`error parsing contest data pg:${pg}`, err)
-    }
-    if (f) {
-      break;
-    }
+      
+  //     let data
+  //     try {
+  //       data = JSON.parse(s);
+  //       console.log("data");
+  //       pg++;
+  //     }
+  //     catch (err) {
+  //       console.error(err);
+  //     }
+  //     console.log("page no:", pg)
+  //     // // console.log(data);
+  //     await browser.close();
+  //     for (let i = 0; i < data.total_rank.length; i++) {
+  //       // console.log(`${data.total_rank[i].username}:${data.total_rank[i].rank}`);
+  //       if (data.total_rank[i].user_slug == username) {
+  //         liverank = data.total_rank[i].rank;
+  //         f = true;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   catch (err) {
+  //     console.log(`error parsing contest data pg:${pg}`, err)
+  //   }
+  //   if (f) {
+  //     break;
+  //   }
 
-  }
-  if (f || pg > 60) {
-    console.log(`username:${username}\n rating:${rating}\ntitle${title}\nlivee ranking:${liverank}`)
-    res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
-  }
+  // }
+  // if (f || pg > 60) {
+  //   console.log(`username:${username}\n rating:${rating}\ntitle${title}\nlivee ranking:${liverank}`)
+  //   res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
+  // }
 }
 app.post('/leetcode', async (req, res) => {
   try {
