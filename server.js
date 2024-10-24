@@ -47,16 +47,18 @@ async function fetchleetcodecontest(res, username, rating, title, liverank) {
       await page.goto(`https://leetcode.com/contest/api/ranking/weekly-contest-420/?pagination=${pg}&region=global`, { timeout: 0 }, { waitUntil: 'networkidle0' });
       const content = await page.content();
       const temp = `${content}`;
-        // console.log(temp);
-        
+        console.log(temp);
+       
       let si = temp.indexOf('"total_rank"');
 
-      // Find the ending index of 'user_num:29181'
+      // // Find the ending index of 'user_num:29181'
       let ei = temp.indexOf('"user_num":') + '"user_num":'.length + 6;
       // // Extract the substring from start to end
       let s = "{" + temp.substring(si, ei);
+      console.log(si);
+      console.log(ei);
       console.log(s);
-      res.status(200).json({ message: 'Success', data:s });
+      res.status(200).json({ message: 'Success', data: s });
       // let data
       // try {
       //   data = JSON.parse(s);
