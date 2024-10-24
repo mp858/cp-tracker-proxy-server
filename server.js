@@ -49,7 +49,7 @@ async function fetchleetcodecontest(res, username, rating, title, liverank) {
       const temp = `${content}`;
         // console.log(temp);
         
-      let si = temp.indexOf('"total_rank"');/
+      let si = temp.indexOf('"total_rank"');
 
       // Find the ending index of 'user_num:29181'
       let ei = temp.indexOf('"user_num":') + '"user_num":'.length + 6;
