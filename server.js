@@ -7,6 +7,7 @@ const cheerio = require('cheerio');
 const p = require('puppeteer');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
 require("dotenv").config();
 // Use the stealth plugin
 puppeteer.use(StealthPlugin());
@@ -26,63 +27,69 @@ app.use((req, res, next) => {
 });
 // Enable JSON parsing
 app.use(express.json());
-async function fetchleetcodecontest(res, username, rating, title, liverank) {
-  let f = false;
-  let pg = 1;
-  for (pg = 1; pg <=1;pg++) {
-    try {
-      const browser = await p.launch({  headless:true});
-      const page = await browser.newPage();
-      await page.goto(`https://leetcode.com/contest/api/ranking/weekly-contest-420/?pagination=${pg}&region=global`, { timeout: 0 }, { waitUntil: 'networkidle0' });
-      const content = await page.content();
-      const temp = `${content}`;
-        console.log(temp);
+// async function fetchleetcodecontest(res, username, rating, title, liverank) {
+//   let f = false;
+//   let pg = 1;
+//   for (pg = 1; pg <=60;) {
+//     try {
+//       const browser = await puppeteer.launch({  headless:true,
+//         arg: [
+//           "--disable--setuid-sandbox",
+//           "--no-sandbox",
+//           "--single-process",
+//           "--no-zygote",
+//         ], 
+//         executablePath:
+//           process.env.NODE_ENV === "production"
+//             ? process.env.PUPPETEER_EXECUTABLE_PATH
+//             : puppeteer.executablePath(),
+//           });
+//       const page = await browser.newPage();
+//       await page.goto(`https://leetcode.com/contest/api/ranking/weekly-contest-420/?pagination=${pg}&region=global`, { timeout: 0 }, { waitUntil: 'networkidle0' });
+//       const content = await page.content();
+//       const temp = `${content}`;
+//         console.log(temp);
        
-      let si = temp.indexOf('"total_rank"');
+//       let si = temp.indexOf('"total_rank"');
 
-      // // Find the ending index of 'user_num:29181'
-      let ei = temp.indexOf('"user_num":') + '"user_num":'.length + 6;
-      // // Extract the substring from start to end
-      let s = "{" + temp.substring(si, ei);
-      console.log(si);
-      console.log(ei);
-      console.log(s);
-      res.status(200).json({ message: 'Success', data:{temp, s} });
+//       // // Find the ending index of 'user_num:29181'
+//       let ei = temp.indexOf('"user_num":') + '"user_num":'.length + 6;
+//       // // Extract the substring from start to end
+//       let s = "{" + temp.substring(si, ei);
+//       let data
+//       try {
+//         data = JSON.parse(s);
+//         console.log("data");
+//         pg++;
+//       }
+//       catch (err) {
+//         console.error(err);
+//       }
+//       console.log("page no:", pg)
+//       // // console.log(data);
+//       await browser.close();
+//       for (let i = 0; i < data.total_rank.length; i++) {
+//         // console.log(`${data.total_rank[i].username}:${data.total_rank[i].rank}`);
+//         if (data.total_rank[i].user_slug == username) {
+//           liverank = data.total_rank[i].rank;
+//           f = true;
+//           break;
+//         }
+//       }
+//     }
+//     catch (err) {
+//       console.log(`error parsing contest data pg:${pg}`, err)
+//     }
+//     if (f) {
+//       break;
+//     }
 
-      // let data
-      // try {
-      //   data = JSON.parse(s);
-      //   console.log("data");
-      //   pg++;
-      // }
-      // catch (err) {
-      //   console.error(err);
-      // }
-      // console.log("page no:", pg)
-      // // // console.log(data);
-      // await browser.close();
-      // for (let i = 0; i < data.total_rank.length; i++) {
-      //   // console.log(`${data.total_rank[i].username}:${data.total_rank[i].rank}`);
-      //   if (data.total_rank[i].user_slug == username) {
-      //     liverank = data.total_rank[i].rank;
-      //     f = true;
-      //     break;
-      //   }
-      // }
-    }
-    catch (err) {
-      console.log(`error parsing contest data pg:${pg}`, err)
-    }
-    // if (f) {
-    //   break;
-    // }
-
-  }
-  if (f || pg > 60) {
-    console.log(`username:${username}\n rating:${rating}\ntitle${title}\nlivee ranking:${liverank}`)
-    res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
-  }
-}
+//   }
+//   if (f || pg > 60) {
+//     console.log(`username:${username}\n rating:${rating}\ntitle${title}\nlivee ranking:${liverank}`)
+//     res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
+//   }
+// }
 app.post('/leetcode', async (req, res) => {
   try {
     console.log("Leetcode")
@@ -109,43 +116,42 @@ app.post('/leetcode', async (req, res) => {
         if (userRanking) {
           rating = Math.round(userRanking.rating);
           title = userRanking.badge ? userRanking.badge.name : 'None';
-          //  fetchleetcodecontest(username,1);
           // this url gives details of top two contest upcoming or running in leetcode
-          fetch("https://competeapi.vercel.app/contests/leetcode/").then((response) => {
-            response.json().then((data) => {
-              if (data.data.topTwoContests.length) {
-                let contest_slag = data.data.topTwoContests[0].title;
-                const start_time = data.data.topTwoContests[0].startTime;
-                const duration = data.data.topTwoContests[0].duration
-                for (let i = 0; i < contest_slag.length; i++) {
-                  if (contest_slag[i] == ' ')
-                    contest_slag[i] = '-'
-                }
-                console.log("contest slag:", contest_slag);
-                const curr_time = Math.floor(Date.now() / 1000);
+          // fetch("https://competeapi.vercel.app/contests/leetcode/").then((response) => {
+          //   response.json().then((data) => {
+          //     // if (data.data.topTwoContests.length) {
+          //     //   let contest_slag = data.data.topTwoContests[0].title;
+          //     //   const start_time = data.data.topTwoContests[0].startTime;
+          //     //   const duration = data.data.topTwoContests[0].duration
+          //     //   for (let i = 0; i < contest_slag.length; i++) {
+          //     //     if (contest_slag[i] == ' ')
+          //     //       contest_slag[i] = '-'
+          //     //   }
+          //     //   console.log("contest slag:", contest_slag);
+          //     //   const curr_time = Math.floor(Date.now() / 1000);
 
-                // if(curr_time>=start_time&&curr_time<(start_time+duration)){
-                fetchleetcodecontest(res, username, rating, title, liverank)
-                // }
-                // else{
-                //   res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: "no contest is running" } });
-                // }
+          //     //   if(curr_time>=start_time&&curr_time<(start_time+duration)){
+          //     //   fetchleetcodecontest(res, username, rating, title, liverank)
+          //     //   }
+          //     //   else{
+          //     //   //   res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: "no contest is running" } });
+          //     //   }
 
-              }
-              else {
-                res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: "error fecthing contest details" } });
-              }
+          //     // }
+          //     // else {
+          //       res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: "error fecthing contest details" } });
+          //     // }
 
 
-            }).catch((err) => {
-              console.error("error parsing top two contest data", err);
-            })
-          }).catch((err) => {
-            console.error("error fetching top two contest data", err)
-            res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: "error fecthing contest details" } });
-          })
+          //   }).catch((err) => {
+          //     console.error("error parsing top two contest data", err);
+          //   })
+          // }).catch((err) => {
+          //   console.error("error fetching top two contest data", err)
+          //   res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: "error fecthing contest details" } });
+          // })
           // Output the values
-
+          res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank:liverank} });
         } else {
           res.status(500).send(new Error("invalid username"));
         }
