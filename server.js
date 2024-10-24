@@ -287,9 +287,9 @@ app.post('/codechef', async (req, res) => {
         fetch("https://competeapi.vercel.app/contests/codechef/").then((response) => {
           response.json().then((data) => {
             // console.log(data);
-            //   if(data.present_contests.length>0){
-            // let contest_code=`${data.present_contests[0].contest_code}`;
-            let contest_code = `START157`;
+              if(data.present_contests.length>0){
+            let contest_code=`${data.present_contests[0].contest_code}`;
+            // let contest_code = `START157`;
             if (rating <= 1399) {
               contest_code += "D";
             }
@@ -312,12 +312,12 @@ app.post('/codechef', async (req, res) => {
               console.error('error fetching contest data', err)
               res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
             })
-            //   }
-            //   else{
-            //     console.log("no contest  is running")
-            //     console.log(`username:${username}\nrating:${rating}\ntitle${title}\nlivee ranking:${liverank}`)
-            //     res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
-            //   }
+              }
+              else{
+                console.log("no contest  is running")
+                console.log(`username:${username}\nrating:${rating}\ntitle${title}\nlivee ranking:${liverank}`)
+                res.status(200).json({ message: 'Success', data: { rating: rating, title: title, rank: liverank } });
+              }
           })
         }).catch((err) => {
           console.error("error fetching contest data", err)
