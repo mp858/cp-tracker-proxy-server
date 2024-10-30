@@ -341,6 +341,7 @@ async function fetchcodechefUserRank(username, contest_code) {
   // Launch the browser
   const browser = await p.launch({
     headless:true,
+    timeout: 60000, 
     arg: [
       "--disable--setuid-sandbox",
       "--no-sandbox",
