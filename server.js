@@ -243,7 +243,7 @@ app.post('/codechef', async (req, res) => {
   try {
     console.log("codechef")
     const { username } = req.body;
-    const url = `https://codechef-api.vercel.app/handle/${username}`;
+    const url = `https://coding-platform-profile-api.onrender.com/codechef/${username}`;
     // console.log(url);
     let title = 'None'
     let rating = 0
@@ -255,7 +255,7 @@ app.post('/codechef', async (req, res) => {
         res.status(500).send(new Error("invalid username"));
       }
       else {
-        rating = data.currentRating;
+        rating = data.rating;
         if (!rating) {
           rating = 0
         }
